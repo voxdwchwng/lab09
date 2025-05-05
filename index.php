@@ -1,107 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiển thị Dữ liệu từ Bảng</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Hiển thị Dữ liệu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-group button {
+            min-width: 130px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 class="my-4">Chọn Bảng để Hiển Thị</h2>
-    <div class="btn-group">
-        <button class="btn btn-primary m-1" onclick="loadTable('tbl_nguoidung')">Bảng Người Dùng</button>
-        <button class="btn btn-primary m-1" onclick="loadTable('tbl_bantin')">Bảng Bản Tin</button>
-        <button class="btn btn-primary m-1" onclick="loadTable('tbl_binhluan')">Bảng Bình Luận</button>
-        <button class="btn btn-primary m-1" onclick="loadTable('tbl_dangbai')">Bảng Đăng Bài</button>
-        <button class="btn btn-primary m-1" onclick="loadTable('tbl_danhmuc')">Bảng Danh Mục</button>
-        <button class="btn btn-primary m-1" onclick="loadTable('tbl_docgia')">Bảng Độc Giả</button>
-        <button class="btn btn-primary m-1" onclick="loadTable('tbl_phanquyen')">Bảng Phân Quyền</button>
+<div class="container my-5">
+    <h2 class="mb-4 text-center">📊 Giao Diện Quản Lý Dữ Liệu</h2>
+
+    <div class="accordion" id="dataAccordion">
+        <!-- Bảng chính -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTables">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTables">
+                    📂 Chọn Bảng Dữ Liệu
+                </button>
+            </h2>
+            <div id="collapseTables" class="accordion-collapse collapse show" data-bs-parent="#dataAccordion">
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-outline-primary" onclick="loadTable('tbl_nguoidung')">Người Dùng</button>
+                        <button class="btn btn-outline-primary" onclick="loadTable('tbl_bantin')">Bản Tin</button>
+                        <button class="btn btn-outline-primary" onclick="loadTable('tbl_binhluan')">Bình Luận</button>
+                        <button class="btn btn-outline-primary" onclick="loadTable('tbl_dangbai')">Đăng Bài</button>
+                        <button class="btn btn-outline-primary" onclick="loadTable('tbl_danhmuc')">Danh Mục</button>
+                        <button class="btn btn-outline-primary" onclick="loadTable('tbl_docgia')">Độc Giả</button>
+                        <button class="btn btn-outline-primary" onclick="loadTable('tbl_phanquyen')">Phân Quyền</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tùy chọn đặc biệt -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSpecial">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSpecial">
+                    ⚙️ Tùy Chọn Đặc Biệt
+                </button>
+            </h2>
+            <div id="collapseSpecial" class="accordion-collapse collapse" data-bs-parent="#dataAccordion">
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('a')">A</button>
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('b')">B</button>
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('c')">C</button>
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('d')">D</button>
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('e')">E</button>
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('f')">F</button>
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('g')">G</button>
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('h')">H</button>
+                        <button class="btn btn-outline-secondary" onclick="loadSpecial('i')">I</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="btn-group">
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('a')">a</button>
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('b')">b</button>
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('c')">c</button>
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('d')">d</button>
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('e')">e</button>
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('f')">f</button>
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('g')">g</button>
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('h')">h</button>
-        <button class="btn btn-secondary m-1" onclick="loadSpecial('i')">i</button>
-    </div>
-    
+    <!-- Hiển thị kết quả -->
     <div id="table-container" class="mt-5">
-        <!-- Kết quả sẽ được hiển thị ở đây -->
+        <div class="alert alert-info text-center">📥 Vui lòng chọn một bảng để hiển thị dữ liệu.</div>
     </div>
 </div>
 
-
+<!-- Script -->
 <script>
-    // Hàm loadTable sẽ tải dữ liệu của bảng từ server
     function loadTable(tableName) {
-        $.ajax({
-            url: 'load_table.php',
-            type: 'GET',
-            data: { table: tableName },
-            success: function(data) {
-                $('#table-container').html(data);  // Hiển thị dữ liệu vào trong phần #table-container
-            },
-            error: function() {
-                alert("Có lỗi khi tải dữ liệu.");
-            }
-        });
+        fetch(`load_table.php?table=${tableName}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("table-container").innerHTML = data;
+            })
+            .catch(() => {
+                alert("❌ Lỗi khi tải dữ liệu bảng.");
+            });
     }
-
-
 
     function loadSpecial(option) {
-        let url = '';
-        switch (option) {
-            case 'a':
-                url = 'load_a.php';
-                break;
-            case 'b':
-                url = 'load_b.php';
-                break;
-            case 'c':
-                url = 'load_c.php';
-                break;
-            case 'd':
-                url = 'load_d.php';
-                break;
-            case 'e':
-                url = 'load_e.php';
-                break;
-            case 'f':
-                url = 'load_f.php';
-                break;
-            case 'g':
-                url = 'load_g.php';
-                break;
-            case 'h':
-                url = 'load_h.php';
-                break;
-            case 'i':
-                url = 'load_i.php';
-                break;
-        }
+        const url = `load_${option}.php`;
 
-        $.ajax({
-            url: url,  // Gọi file đúng theo option
-            type: 'GET',
-            data: { option: option },
-            success: function(data) {
-                $('#table-container').html(data);
-            },
-            error: function() {
-                alert("Có lỗi khi tải dữ liệu.");
-            }
-        });
+        fetch(`${url}?option=${option}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("table-container").innerHTML = data;
+            })
+            .catch(() => {
+                alert("❌ Lỗi khi tải dữ liệu đặc biệt.");
+            });
     }
-    
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
