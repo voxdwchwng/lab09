@@ -5,13 +5,19 @@ $link = null;
 taoKetNoi($link);
 
 if (isset($_GET['option']) && $_GET['option'] == 'e') {
+    $tieude_bai_viet = 'Thoái trào tất yếu của Apple trước cạnh tranh trên thị trường smartphone';
+    $tu_khoa = '%ngốc nghếch%';
+    
     $query = "SELECT dg.* 
-    FROM tbl_docgia dg JOIN tbl_binhluan bl ON dg.id_docgia = bl.id_docgia 
-    JOIN tbl_bantin bt ON bl.id_bantin = bt.id_bantin 
-    WHERE bt.tieude = 'Thoái trào tất yếu của Apple trước cạnh tranh trên thị trường smartphone' 
-    AND bl.noidung LIKE '%ngốc nghếch%';";
-
-    $result = chayTruyVanTraVeDL($link, $query);
+              FROM tbl_docgia dg 
+              JOIN tbl_binhluan bl ON dg.id_docgia = bl.id_docgia 
+              JOIN tbl_bantin bt ON bl.id_bantin = bt.id_bantin 
+              WHERE bt.tieude = ? AND bl.noidung LIKE ?;";
+    
+    $stmt = mysqli_prepare($link, $query);
+    mysqli_stmt_bind_param($stmt, 'ss', $tieude_bai_viet, $tu_khoa);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
